@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -40,13 +40,30 @@ async function run() {
         })
 
 
+
+
+
+        app.put('/tasks/:id', async (req, res) => {
+            const id = req.params.id
+            const updateIsDone = req.body
+            const query = { _id: ObjectId(id) }
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    isDone: updateIsDone.isDone
+                }
+            }
+            const result = await taskCollection.updateOne(query, updateDoc, options)
+            res.send(result)
+        })
+
+
     }
     finally {
 
 
     }
 }
-
 
 
 run().catch(console.dir)
